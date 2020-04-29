@@ -27,6 +27,7 @@ face_encodings = []
 face_names = []
 process_this_frame = True
 sanity_count = 0
+unknown_count = 0
 
 while True:
     # Grab a single frame of video
@@ -83,6 +84,18 @@ while True:
         writer.writerow([name,date,time])
         # print(name + date + time)
         break
+
+
+    if(name == "Unknown"):
+        unknown_count+=1
+    else:
+        unknown_count = 0
+    if(unknown_count == 600):
+        cv2.destroyAllWindows()
+        print("You haven't been registered")
+        unknown_count = 0
+        break
+
     process_this_frame = not process_this_frame
 
 
