@@ -52,7 +52,7 @@ def register_yourself(student_id):
     i = 0
     j = start
 
-    while j < start + 2:   # Take 10 more images
+    while j < start + 10:   # Take 10 more images
         i += 1
         check, image = video_capture.read()
 
