@@ -4,33 +4,36 @@ import numpy as np
 # from mtcnn import MTCNN
 import json
 
-# PATH = "/home/harsh/Backup/face-recognition/data"
-PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data"
-STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
-
-try:
-    os.makedirs(PATH)
-except:
-    pass
-
-try:
-    with open( os.path.join(STORAGE_PATH, "known_face_ids.pickle"),"rb") as fp:
-        known_face_ids = pickle.load(fp)
-    with open( os.path.join(STORAGE_PATH, "known_face_encodings.pickle"),"rb") as fp:
-        known_face_encodings = pickle.load(fp)
-    # known_face_ids = np.load("known_face_ids.npy")
-    # known_face_encodings = np.load("known_face_encodings.npy")
-except:
-    known_face_encodings = []
-    known_face_ids = []
-
-try:
-    with open( os.path.join(STORAGE_PATH, "id_idx.json"),"r") as fp:
-        id_idx = json.load(fp)
-except:
-    id_idx = {}
 
 def register_yourself(student_id):
+
+    # PATH = "/home/harsh/Backup/face-recognition/data"
+    PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data"
+    STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
+
+    try:
+        os.makedirs(PATH)
+    except:
+        pass
+
+    try:
+        with open( os.path.join(STORAGE_PATH, "known_face_ids.pickle"),"rb") as fp:
+            known_face_ids = pickle.load(fp)
+        with open( os.path.join(STORAGE_PATH, "known_face_encodings.pickle"),"rb") as fp:
+            known_face_encodings = pickle.load(fp)
+        # known_face_ids = np.load("known_face_ids.npy")
+        # known_face_encodings = np.load("known_face_encodings.npy")
+    except:
+        known_face_encodings = []
+        known_face_ids = []
+
+    try:
+        with open( os.path.join(STORAGE_PATH, "id_idx.json"),"r") as fp:
+            id_idx = json.load(fp)
+    except:
+        id_idx = {}
+        
+
     video_capture = cv2.VideoCapture(0)
     # student_id = input("Enter your id: ")
 

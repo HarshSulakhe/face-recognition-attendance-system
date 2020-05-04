@@ -3,27 +3,36 @@ import cv2, pickle, os, csv, stat
 import numpy as np
 from datetime import datetime
 
-STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
-
-with open( os.path.join(STORAGE_PATH, "known_face_ids.pickle"),"rb") as fp:
-    known_face_ids = pickle.load(fp)
-with open( os.path.join(STORAGE_PATH, "known_face_encodings.pickle"),"rb") as fp:
-    known_face_encodings = pickle.load(fp)
-
-
-# CSV_PATH = "/home/harsh/Backup/face-recognition/data/attendance.csv"
-CSV_PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data/attendance.csv"
-
-if(os.path.exists(CSV_PATH)):
-    csv_file = open(CSV_PATH, "a")
-    writer = csv.writer(csv_file)
-else:
-    os.mknod(CSV_PATH)
-    csv_file = open(CSV_PATH, "w")
-    writer = csv.writer(csv_file)
-    writer.writerow(["Student ID", "Date", "Time of Entry"])
-
 def mark_your_attendance():
+
+    STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
+
+    try:
+        with open( os.path.join(STORAGE_PATH, "known_face_ids.pickle"),"rb") as fp:
+            known_face_ids = pickle.load(fp)
+        with open( os.path.join(STORAGE_PATH, "known_face_encodings.pickle"),"rb") as fp:
+            known_face_encodings = pickle.load(fp)
+        # known_face_ids = np.load("known_face_ids.npy")
+        # known_face_encodings = np.load("known_face_encodings.npy")
+    except:
+        known_face_encodings = []
+        known_face_ids = []
+
+
+    # CSV_PATH = "/home/harsh/Backup/face-recognition/data/attendance.csv"
+    CSV_PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data/attendance.csv"
+
+
+    if(os.path.exists(CSV_PATH)):
+        csv_file = open(CSV_PATH, "a+")
+        writer = csv.writer(csv_file)
+        
+    else:
+        os.mknod(CSV_PATH)
+        csv_file = open(CSV_PATH, "w+")
+        writer = csv.writer(csv_file)
+        writer.writerow(["Student ID", "Date", "Time of Entry"])
+
     name = "Unknown"
     face_locations = []
     face_encodings = []
@@ -90,7 +99,7 @@ def mark_your_attendance():
             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
             date = dt_string.split(" ")[0]
             time = dt_string.split(" ")[1]
-            writer.writerow([name,date,time])
+            writer.writerow([name, date, time])
             # print(name + date + time)
             break
 
