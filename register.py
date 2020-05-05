@@ -3,13 +3,17 @@ import cv2, os, time, pickle
 import numpy as np
 # from mtcnn import MTCNN
 import json
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+# load image using cv2....and do processing.
 
 
 def register_yourself(student_id):
 
+    mpl.rcParams['toolbar'] = 'None'
     # PATH = "/home/harsh/Backup/face-recognition/data"
-    PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data"
-    STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
+    PATH = "/home/harsh/face-recognition-attendance-system/static/data"
+    STORAGE_PATH = "/home/harsh/face-recognition-attendance-system/storage"
 
     try:
         os.makedirs(PATH)
@@ -32,7 +36,7 @@ def register_yourself(student_id):
             id_idx = json.load(fp)
     except:
         id_idx = {}
-        
+
 
     video_capture = cv2.VideoCapture(0)
     # student_id = input("Enter your id: ")
@@ -55,16 +59,34 @@ def register_yourself(student_id):
     i = 0
     j = start
 
+    check, image = video_capture.read()
+
+    # print("BEFORE SHOWING")
+    plot = plt.subplot(1,1,1)
+    plt.axis('off')
+    plt.title("Registering face, wait for a bit")
+    im1 = plot.imshow(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))
+# print("WORKS reg")
+
     while j < start + 10:   # Take 10 more images
+
+        # if not video_capture.isOpened():
+        #     print("ERROR OPENING CV")
         i += 1
         check, image = video_capture.read()
 
-        cv2.imshow("Now taking images (Wait for some time)", image)
-        cv2.waitKey(1)  #Display frame for 1 ms
-
+        # print("BEFORE SHOWING")
+        plt.ion()
+        im1.set_data(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        plt.pause(0.001)
+        # as opencv loads in BGR format by default, we want to show it in RGB.
+        # cv2.imshow("Now taking images (Wait for some time)", image)
+        # cv2.waitKey(20)  #Display frame for 1 ms
+        # print("AFTER SHOWING")
         # Take 30 frames
+        plt.show()
         if(i % 30 == 0):
-            cv2.imwrite(IMAGE_PATH + "/test_" + str(j) + ".jpg", image)
+            cv2.imwrite(IMAGE_PATH + "/{}_".format(student_id) + str(j) + ".jpg", image)
             try:
                 known_face_encodings.append(face_recognition.face_encodings(image)[0])
                 known_face_ids.append(student_id)
@@ -79,14 +101,15 @@ def register_yourself(student_id):
 
     id_idx[student_id] = start + 10
 
+    video_capture.release()
     cv2.destroyAllWindows()
+    # video_capture.
 
     with open( os.path.join(STORAGE_PATH, "id_idx.json"),"w") as outfile:
         json.dump(id_idx, outfile)
 
     # Exit time
     toc = time.time()
-    print(toc - tic)
-
-
+    # print(toc - tic)
+    plt.close()
 # register_yourself()

@@ -32,9 +32,9 @@ def attendance():
         flash("Attendence Marked Successfully")
     else:
         flash("You are not registered yet")
-    
+
     return render_template("index.html")
 
 
 if __name__ == '__main__':
-    app.run(debug = True)    
+    app.run(debug = True)

@@ -2,10 +2,13 @@ import face_recognition.api as face_recognition
 import cv2, pickle, os, csv, stat
 import numpy as np
 from datetime import datetime
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 def mark_your_attendance():
 
-    STORAGE_PATH = "/home/vishal/Documents/face-recognition-attendance-system/storage"
+    mpl.rcParams['toolbar'] = 'None'
+    STORAGE_PATH = "/home/harsh/face-recognition-attendance-system/storage"
 
     try:
         with open( os.path.join(STORAGE_PATH, "known_face_ids.pickle"),"rb") as fp:
@@ -20,13 +23,13 @@ def mark_your_attendance():
 
 
     # CSV_PATH = "/home/harsh/Backup/face-recognition/data/attendance.csv"
-    CSV_PATH = "/home/vishal/Documents/face-recognition-attendance-system/static/data/attendance.csv"
+    CSV_PATH = "/home/harsh/face-recognition-attendance-system/static/data/attendance.csv"
 
 
     if(os.path.exists(CSV_PATH)):
         csv_file = open(CSV_PATH, "a+")
         writer = csv.writer(csv_file)
-        
+
     else:
         os.mknod(CSV_PATH)
         csv_file = open(CSV_PATH, "w+")
@@ -43,11 +46,17 @@ def mark_your_attendance():
     marked = True
 
     video_capture = cv2.VideoCapture(0)
+    ret, frame = video_capture.read()
+
+    plot = plt.subplot(1,1,1)
+    plt.title("Detecting Face")
+    plt.axis('off')
+    im1 = plot.imshow(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     while True:
         # Grab a single frame of video
         ret, frame = video_capture.read()
-
+        # print("FRAME READ WORKS")
         # Resize frame of video to 1/4 size for faster face recognition processing
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
@@ -74,35 +83,18 @@ def mark_your_attendance():
                 # Or instead, use the known face with the smallest distance to the new face
                 face_distances = face_recognition.face_distance(known_face_encodings, face_encoding)
                 # print(face_distances)
-                best_match_index = np.argmin(face_distances)
+                try:
+                    best_match_index = np.argmin(face_distances)
+                except:
+                    # print("No students have been marked")
+                    video_capture.release()
+                    cv2.destroyAllWindows()
+                    marked = False
+                    return marked
                 if matches[best_match_index]:
                     name = known_face_ids[best_match_index]
 
                 face_names.append(name)
-
-        if(sanity_count == 0):
-            prev_name = name
-            sanity_count += 1
-
-        elif(sanity_count < 60):
-            if(prev_name == name and name != "Unknown"):
-                sanity_count += 1
-                prev_name = name
-            else:
-                sanity_count = 0
-
-        elif(sanity_count == 60):
-            print("Face registered")
-            cv2.destroyAllWindows()
-            sanity_count = 0
-            now = datetime.now()
-            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-            date = dt_string.split(" ")[0]
-            time = dt_string.split(" ")[1]
-            writer.writerow([name, date, time])
-            # print(name + date + time)
-            break
-
 
         if(name == "Unknown"):
             unknown_count += 1
@@ -110,8 +102,9 @@ def mark_your_attendance():
             unknown_count = 0
 
         if(unknown_count == 600):
-            cv2.destroyAllWindows()
-            print("You haven't been registered")
+            # video_capture.release()
+            # cv2.destroyAllWindows()
+            # print("You haven't been registered")
             marked = False
             unknown_count = 0
             break
@@ -133,16 +126,50 @@ def mark_your_attendance():
             # Draw a label with a name below the face
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
+            cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.7, (255, 255, 255), 1)
 
+
+        # print("BEFORE sHOWING")
         # Display the resulting image
-        cv2.imshow('Video', frame)
-        cv2.waitKey(1)
-        # Hit 'q' on the keyboard to quit!
+        # cv2.imshow('Video', frame)
+        # if cv2.waitKey(20) == 27:
+        #     break
 
+        plt.ion()
+        im1.set_data(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        plt.pause(0.001)
+        # as opencv loads in BGR format by default, we want to show it in RGB.
+        plt.show()
+
+        # print("AFTER SHOWING")
+        # Hit 'q' on the keyboard to quit!
+        if(sanity_count == 0):
+            prev_name = name
+            sanity_count += 1
+
+        elif(sanity_count < 60):
+            if(prev_name == name and name != "Unknown"):
+                sanity_count += 1
+                prev_name = name
+            else:
+                sanity_count = 0
+
+        elif(sanity_count == 60):
+            # print("Face registered")
+            # video_capture.release()
+            # cv2.destroyAllWindows()
+            sanity_count = 0
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            date = dt_string.split(" ")[0]
+            time = dt_string.split(" ")[1]
+            writer.writerow([name, date, time])
+            # print(name + date + time)
+            break
 
     # Release handle to the webcam
 
+    plt.close()
     video_capture.release()
     cv2.destroyAllWindows()
 
