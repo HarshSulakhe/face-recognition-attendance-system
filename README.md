@@ -26,19 +26,19 @@ Our algorithm is divided into three main parts:
 
 #### STEP 1: Face detection
 
-![Outline_CNN_Model](./Images/Outline_CNN_Model.png?raw=true "Outline_CNN_Model")
+![Outline_CNN_Model](./Images/Outline_CNN_Model.PNG?raw=true "Outline_CNN_Model")
 
 We use two methods to detect faces in each video frame:
   - The first method is using *Convolutional Neural Networks (CNNs)* for face detection. It generates a `bounding box` around the face. 
   - To further increase the accuracy, we detect the face using a *HOG (Histogram of Gradients)* based detector.
   
-![HOG](./Images/HOG.png?raw=true "HOG")
+![HOG](./Images/HOG.PNG?raw=true "HOG")
 
 #### STEP 2: Facial Landmark points detection
 
 Sixty-eight landmark points are identified on the face using the `Dlib` python library. These landmark points are crucial for the next phase.
 
-![Dlib_Landmark_Points](./Images/Dlib_Landmark_Points.png?raw=true "Dlib_Landmark_Points")
+![Dlib_Landmark_Points](./Images/Dlib_Landmark_Points.PNG?raw=true "Dlib_Landmark_Points")
 
 #### STEP 3: Alignment
 
@@ -57,17 +57,17 @@ Sixty-eight landmark points are identified on the face using the `Dlib` python l
 - Finally, after training the model and generating the embeddings, we recognize different faces using a `Support Vector Machine (SVM)` based classifier. 
 - A test image’s embeddings are generated in the above fashion and finally compared with the other embeddings for successful classification.
 
-![Triplet_Loss_Function](./Images/Triplet_Loss_Function.png?raw=true "Triplet_Loss_Function")
+![Triplet_Loss_Function](./Images/Triplet_Loss_Function.PNG?raw=true "Triplet_Loss_Function")
 
 ### PHASE III - Web Application Development
 
 We built a web platform where students can register themselves and mark their attendance once registered.
 
-![Home_Page](./Images/Home_Page.png?raw=true "Home_Page")
+![Home_Page](./Images/Home_Page.PNG?raw=true "Home_Page")
 
-![Registration_Page](./Images/Registration_Page.png?raw=true "Registration_Page")
+![Registration_Page](./Images/Registration_Page.PNG?raw=true "Registration_Page")
 
-![Identity_Recognition](./Images/Identity_Recognition.png?raw=true "Identity_Recognition")
+![Identity_Recognition](./Images/Identity_Recognition.PNG?raw=true "Identity_Recognition")
 
 ## Error Analysis
 
