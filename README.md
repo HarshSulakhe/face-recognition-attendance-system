@@ -67,7 +67,6 @@ We built a web platform where students can register themselves and mark their at
 
 ![Registration_Page](./Images/Registration_Page.PNG?raw=true "Registration_Page")
 
-![Identity_Recognition](./Images/Identity_Recognition.PNG?raw=true "Identity_Recognition")
 
 ## Error Analysis
 
